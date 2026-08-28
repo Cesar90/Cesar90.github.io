@@ -1,0 +1,147 @@
+@import "reset";
+@import "variables/global";
+@import "themes/normal";
+@import "themes/dark";
+@import "themes/orange";
+
+body {
+    font: var(--font-m);
+    color: var(--primary-color);
+}
+
+.app,
+.app_modal,
+.app_drawer {
+    font: var(--font-m);
+    color: var(--primary-color);
+}
+
+.app {
+    background: var(--bg-color);
+    min-height: 100vh;
+}
+
+.content-page {
+    display: flex;
+}
+
+// .page-wrapper {
+//     flex-grow: 1;
+//     padding: 20px 20px 20px 45px;
+//     height: calc(100vh - var(--navbar-height));
+//     overflow-y: auto;
+
+//     // width: 100%;
+//     flex-shrink: 100;
+// }
+
+// *::-webkit-scrollbar {
+//     width: 12px;
+//     height: 8px;
+// }
+
+// *::-webkit-scrollbar-track {
+//     background: var(--card-bg);
+// }
+
+// *::-webkit-scrollbar-thumb {
+//     background-color: var(--inverted-primary-color);
+//     border-radius: 20px;
+//     border: 2px solid var(--primary-color);
+// }
+
+
+@keyframes roadMove {
+    0% {
+        background-position: 0 0;
+        opacity: 0.35;
+    }
+
+    50% {
+        opacity: 0.75;
+    }
+
+    100% {
+        background-position: 80px 0;
+        opacity: 0.35;
+    }
+}
+
+.road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(255, 255, 255, 0.35) 0,
+            rgba(255, 255, 255, 0.35) 14px,
+            transparent 14px,
+            transparent 28px);
+    animation: roadMove 1.2s linear infinite;
+}
+
+/* road dashes (center line) */
+.road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(255, 255, 255, 0.35) 0,
+            rgba(255, 255, 255, 0.35) 10px,
+            transparent 10px,
+            transparent 18px);
+}
+
+.dark .road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(255, 255, 255, 0.35) 0,
+            rgba(255, 255, 255, 0.35) 10px,
+            transparent 10px,
+            transparent 18px);
+}
+
+/* Light mode: darker dashes */
+:not(.dark) .road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(15, 23, 42, 0.35) 0,
+            rgba(15, 23, 42, 0.35) 10px,
+            transparent 10px,
+            transparent 18px);
+}
+
+/* road dashes (center line) */
+.road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(15, 23, 42, 0.35) 0,
+            rgba(15, 23, 42, 0.35) 10px,
+            transparent 10px,
+            transparent 18px);
+}
+
+/* dark mode: lighter dashes */
+.dark .road-dashes {
+    background-image: repeating-linear-gradient(90deg,
+            rgba(255, 255, 255, 0.35) 0,
+            rgba(255, 255, 255, 0.35) 10px,
+            transparent 10px,
+            transparent 18px);
+}
+
+/* Truck travel: slower + softer fade */
+@keyframes truckDrive {
+    0% {
+        left: 12px;
+        opacity: 0.75;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        left: calc(100% - 36px);
+        opacity: 0.75;
+    }
+}
+
+.road-truck {
+    animation: truckDrive 7s linear infinite;
+    /* ✅ slower */
+}
