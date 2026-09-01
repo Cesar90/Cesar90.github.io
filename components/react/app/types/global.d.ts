@@ -20,6 +20,12 @@ record = d
 d = record
 */
 
+declare module '*.pdf' {
+    const src: string;
+
+    export default src;
+}
+
 type RequireOnly<T, P extends keyof T> = Pick<T, P> & Partial<Omit<T, P>>;
 
 type PickWindowProperties<Keys extends keyof globalThis.Window> = {

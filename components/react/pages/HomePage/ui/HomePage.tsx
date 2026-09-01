@@ -1,13 +1,25 @@
 import {
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+
+import {
     ArrowDown,
     ArrowUpRight,
     BriefcaseBusiness,
     Code2,
     Database,
+    Download,
+    FileText,
     Github,
     Linkedin,
     Mail,
     MapPin,
+    Minus,
+    Plus,
+    Monitor,
+    RotateCcw,
     Server,
     Terminal,
 } from 'lucide-react';
@@ -20,6 +32,15 @@ import {
 } from 'react-leaflet';
 
 import {
+    Document,
+    Page,
+    pdfjs,
+} from 'react-pdf';
+
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+import {
     Badge,
     Button,
     Card,
@@ -27,10 +48,25 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
     Separator,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
 } from '@/shared/ui/shadcn/new-york';
 
-import profilePhoto from '@/shared/assets/images/cesar-cordero.jpg';
+import profilePhoto from '@/shared/assets/images/cesar-cordero-retro.jpg';
+import cvPdf from '@/shared/assets/documents/Cesar-Daniel-Cordero-Jimenez-Resume.pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+).toString();
 
 const technologyIcons: Record<string, string> = {
     Django: 'devicon-django-plain',
@@ -543,6 +579,410 @@ const ProjectTechnologyIcon = ({
     );
 };
 
+const CvDialog = () => {
+    const viewerRef = useRef<HTMLDivElement | null>(null);
+
+    const [containerWidth, setContainerWidth] = useState(800);
+    const [numPages, setNumPages] = useState(0);
+    const [zoom, setZoom] = useState(1);
+
+    useEffect(() => {
+        const element = viewerRef.current;
+
+        if (!element) {
+            return undefined;
+        }
+
+        const updateWidth = () => {
+            const availableWidth = element.clientWidth - 24;
+
+            setContainerWidth(
+                Math.max(
+                    Math.min(availableWidth, 900),
+                    260,
+                ),
+            );
+        };
+
+        updateWidth();
+
+        const resizeObserver = new ResizeObserver(() => {
+            updateWidth();
+        });
+
+        resizeObserver.observe(element);
+
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, []);
+
+    const handleDocumentLoadSuccess = ({
+        numPages: loadedPages,
+    }: {
+        numPages: number;
+    }) => {
+        setNumPages(loadedPages);
+    };
+
+    const handleZoomOut = () => {
+        setZoom((currentZoom) => (
+            Math.max(
+                Number((currentZoom - 0.1).toFixed(1)),
+                0.5,
+            )
+        ));
+    };
+
+    const handleZoomIn = () => {
+        setZoom((currentZoom) => (
+            Math.min(
+                Number((currentZoom + 0.1).toFixed(1)),
+                2,
+            )
+        ));
+    };
+
+    const handleResetZoom = () => {
+        setZoom(1);
+    };
+
+    const pageWidth = containerWidth * zoom;
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button
+                    size="lg"
+                    variant="outline"
+                    className="
+            w-full
+            border-border
+            bg-background/50
+            transition-all
+            hover:-translate-y-0.5
+            hover:bg-accent
+            hover:shadow-sm
+            sm:w-auto
+        "
+                >
+                    <FileText className="mr-2 size-4" />
+
+                    View CV
+                </Button>
+            </DialogTrigger>
+
+            <DialogContent
+                className="
+                    flex
+                    h-[94dvh]
+                    w-[96vw]
+                    max-w-6xl
+                    flex-col
+                    gap-0
+                    overflow-hidden
+                    p-0
+                    sm:h-[92vh]
+                "
+            >
+                <DialogHeader
+                    className="
+                        shrink-0
+                        border-b
+                        px-4
+                        py-3
+                        sm:px-6
+                        sm:py-4
+                    "
+                >
+                    <div
+                        className="
+                            flex
+                            flex-col
+                            gap-3
+                            pr-8
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                        "
+                    >
+                        <div className="min-w-0">
+                            <DialogTitle>
+                                César Cordero — CV
+                            </DialogTitle>
+
+                            <DialogDescription className="mt-1">
+                                Full-Stack Developer
+                            </DialogDescription>
+                        </div>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="
+                                w-full
+                                shrink-0
+                                sm:w-auto
+                            "
+                        >
+                            <a
+                                href={cvPdf}
+                                download="Cesar-Daniel-Cordero-Jimenez-Resume.pdf"
+                            >
+                                <Download className="mr-2 size-4" />
+
+                                Download CV
+                            </a>
+                        </Button>
+                    </div>
+                </DialogHeader>
+
+                {/* Toolbar */}
+                <div
+                    className="
+                        flex
+                        shrink-0
+                        items-center
+                        justify-between
+                        gap-2
+                        border-b
+                        bg-muted/30
+                        px-3
+                        py-2
+                        sm:px-4
+                    "
+                >
+                    <div className="text-xs text-muted-foreground sm:text-sm">
+                        {numPages > 0
+                            ? `${numPages} pages`
+                            : 'Loading...'}
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleZoomOut}
+                                    disabled={zoom <= 0.5}
+                                    aria-label="Zoom out"
+                                >
+                                    <Minus className="size-4" />
+                                </Button>
+                            </TooltipTrigger>
+
+                            <TooltipContent>
+                                Zoom out
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <span
+                            className="
+                                min-w-[48px]
+                                text-center
+                                text-xs
+                                text-muted-foreground
+                                sm:text-sm
+                            "
+                        >
+                            {Math.round(zoom * 100)}
+                            %
+                        </span>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleZoomIn}
+                                    disabled={zoom >= 2}
+                                    aria-label="Zoom in"
+                                >
+                                    <Plus className="size-4" />
+                                </Button>
+                            </TooltipTrigger>
+
+                            <TooltipContent>
+                                Zoom in
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleResetZoom}
+                                    aria-label="Reset zoom"
+                                >
+                                    <RotateCcw className="size-4" />
+                                </Button>
+                            </TooltipTrigger>
+
+                            <TooltipContent>
+                                Reset zoom
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
+                </div>
+
+                {/* PDF Viewer */}
+                <div
+                    ref={viewerRef}
+                    className="
+                        min-h-0
+                        flex-1
+                        overflow-auto
+                        bg-muted/40
+                        p-3
+                        sm:p-4
+                    "
+                >
+                    <Document
+                        file={cvPdf}
+                        onLoadSuccess={handleDocumentLoadSuccess}
+                        loading={(
+                            <div
+                                className="
+                                    flex
+                                    min-h-[400px]
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    gap-4
+                                    text-muted-foreground
+                                "
+                            >
+                                <FileText className="size-10 animate-pulse" />
+
+                                <p className="text-sm">
+                                    Loading CV...
+                                </p>
+                            </div>
+                        )}
+                        error={(
+                            <div
+                                className="
+                                    flex
+                                    min-h-[400px]
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    gap-5
+                                    px-4
+                                    text-center
+                                "
+                            >
+                                <FileText className="size-10 text-muted-foreground" />
+
+                                <p className="font-semibold">
+                                    Unable to display the CV
+                                </p>
+
+                                <Button asChild>
+                                    <a
+                                        href={cvPdf}
+                                        download="Cesar-Daniel-Cordero-Jimenez-Resume.pdf"
+                                    >
+                                        <Download className="mr-2 size-4" />
+
+                                        Download CV
+                                    </a>
+                                </Button>
+                            </div>
+                        )}
+                    >
+                        <div
+                            className="
+                                flex
+                                min-w-full
+                                flex-col
+                                items-center
+                                gap-6
+                            "
+                        >
+                            {Array.from(
+                                {
+                                    length: numPages,
+                                },
+                                (_, index) => (
+                                    <Page
+                                        key={`cv-page-${index + 1}`}
+                                        pageNumber={index + 1}
+                                        width={pageWidth}
+                                        renderTextLayer
+                                        renderAnnotationLayer
+                                        className="
+                                            shrink-0
+                                            overflow-hidden
+                                            rounded-sm
+                                            bg-white
+                                            shadow-xl
+                                        "
+                                    />
+                                ),
+                            )}
+                        </div>
+                    </Document>
+                </div>
+
+                {/* Mobile Actions */}
+                <div
+                    className="
+                        flex
+                        shrink-0
+                        items-center
+                        justify-between
+                        gap-2
+                        border-t
+                        bg-background
+                        px-3
+                        py-3
+                        sm:hidden
+                    "
+                >
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="flex-1"
+                    >
+                        <a
+                            href={cvPdf}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <FileText className="mr-2 size-4" />
+
+                            Open
+                        </a>
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        asChild
+                        className="flex-1"
+                    >
+                        <a
+                            href={cvPdf}
+                            download="Cesar-Daniel-Cordero-Jimenez-Resume.pdf"
+                        >
+                            <Download className="mr-2 size-4" />
+
+                            Download
+                        </a>
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 const MANAGUA_POSITION: [number, number] = [
     12.1149,
     -86.2362,
@@ -563,19 +1003,65 @@ const HomePage = () => {
                 {/* Hero */}
                 <section
                     id="home"
-                    className="relative flex min-h-[calc(100svh-3.5rem)] items-center overflow-hidden"
+                    className="
+                        relative
+                        flex
+                        min-h-[calc(100svh-3.5rem)]
+                        items-center
+                        overflow-hidden
+                    "
                 >
                     <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:px-8">
                         <div className="grid items-center gap-16 lg:grid-cols-[1fr_420px]">
                             <div className="max-w-4xl">
-                                <Badge
-                                    variant="secondary"
-                                    className="mb-6"
-                                >
-                                    <MapPin className="mr-2 size-3.5" />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <a
+                                            href="#map"
+                                            className="
+                                                inline-flex
+                                                rounded-md
+                                                transition-transform
+                                                duration-200
+                                                hover:-translate-y-0.5
+                                                focus:outline-none
+                                                focus-visible:ring-2
+                                                focus-visible:ring-ring
+                                                focus-visible:ring-offset-2
+                                            "
+                                            aria-label="Go to map"
+                                        >
+                                            <Badge
+                                                variant="secondary"
+                                                className="
+                                                    mb-6
+                                                    cursor-pointer
+                                                    transition-colors
+                                                    hover:bg-secondary/80
+                                                "
+                                            >
+                                                <span
+                                                    className="google-map-pin-wrapper"
+                                                    aria-hidden="true"
+                                                >
+                                                    <span className="google-map-pin">
+                                                        <span className="google-map-pin-center" />
+                                                    </span>
 
-                                    Managua, Nicaragua
-                                </Badge>
+                                                    <span className="google-map-pin-shadow" />
+                                                </span>
+
+                                                Managua, Nicaragua
+                                            </Badge>
+                                        </a>
+                                    </TooltipTrigger>
+
+                                    <TooltipContent>
+                                        <p>
+                                            Go to map
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
 
                                 <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-primary">
                                     Full-Stack Developer
@@ -594,27 +1080,63 @@ const HomePage = () => {
                                     production deployment.
                                 </p>
 
-                                <div className="mt-10 flex flex-wrap gap-3">
+                                <div
+                                    className="
+        mt-10
+        flex
+        w-full
+        flex-col
+        gap-3
+        sm:w-auto
+        sm:flex-row
+        sm:flex-wrap
+    "
+                                >
                                     <Button
                                         size="lg"
                                         asChild
+                                        className="
+            w-full
+            bg-foreground
+            text-background
+            shadow-sm
+            transition-all
+            hover:-translate-y-0.5
+            hover:bg-foreground/90
+            hover:shadow-md
+            sm:w-auto
+        "
                                     >
                                         <a href="#projects">
                                             View my work
-
                                             <ArrowDown className="ml-2 size-4" />
                                         </a>
                                     </Button>
 
+                                    {/* Secondary */}
                                     <Button
                                         size="lg"
                                         variant="outline"
                                         asChild
+                                        className="
+                                            w-full
+                                            border-border
+                                            bg-background/50
+                                            transition-all
+                                            hover:-translate-y-0.5
+                                            hover:bg-accent
+                                            hover:shadow-sm
+                                            sm:w-auto
+                                        "
                                     >
                                         <a href="#experience">
+                                            <Monitor className="mr-2 size-4" />
+
                                             My experience
                                         </a>
                                     </Button>
+
+                                    <CvDialog />
                                 </div>
                             </div>
 
@@ -638,6 +1160,49 @@ const HomePage = () => {
                                             lg:size-64
                                         "
                                     />
+
+                                    {/* Active status */}
+                                    <div
+                                        className="
+                                            absolute
+                                            bottom-3
+                                            right-3
+                                            z-10
+                                            sm:bottom-4
+                                            sm:right-4
+                                            lg:bottom-5
+                                            lg:right-5
+                                        "
+                                        title="Available"
+                                        aria-label="Available"
+                                    >
+                                        <span
+                                            className="
+                                                absolute
+                                                inline-flex
+                                                size-full
+                                                animate-ping
+                                                rounded-full
+                                                bg-green-500
+                                                opacity-40
+                                            "
+                                        />
+
+                                        <span
+                                            className="
+                                                relative
+                                                block
+                                                size-5
+                                                rounded-full
+                                                border-4
+                                                border-background
+                                                bg-green-500
+                                                shadow-sm
+                                                sm:size-6
+                                                lg:size-7
+                                            "
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Social links */}
@@ -1051,7 +1616,19 @@ const HomePage = () => {
                                 </p>
                             </div>
 
-                            <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+                            <div
+                                id="map"
+                                className="
+                                    relative
+                                    z-0
+                                    scroll-mt-20
+                                    overflow-hidden
+                                    rounded-xl
+                                    border
+                                    bg-card
+                                    shadow-sm
+                                "
+                            >
                                 <MapContainer
                                     bounds={NICARAGUA_BOUNDS}
                                     boundsOptions={{
@@ -1090,22 +1667,6 @@ const HomePage = () => {
                     </div>
                 </section>
             </main>
-
-            <footer className="border-t">
-                <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8">
-                    <p>
-                        ©
-                        {' '}
-                        {new Date().getFullYear()}
-                        {' '}
-                        César Daniel Cordero Jiménez
-                    </p>
-
-                    <p>
-                        Built with React, TypeScript, Webpack & Tailwind CSS.
-                    </p>
-                </div>
-            </footer>
         </div>
     );
 };

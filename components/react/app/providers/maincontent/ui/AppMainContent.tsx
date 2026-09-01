@@ -40,6 +40,7 @@ import {
 import { useTheme } from '@/app/providers/StoreProvider';
 
 import profilePhoto from '@/shared/assets/images/cesar-cordero.jpg';
+import Footer from '@/shared/ui/Parts/Footer';
 
 const navigationItems = [
     {
@@ -72,6 +73,14 @@ const navigationItems = [
         url: '#contact',
         icon: Mail,
     },
+];
+
+const terminalPhrases = [
+    'César Cordero · Full-Stack Developer',
+    'Python | Go | TypeScript',
+    'React | Django | FastAPI',
+    'Building Scalable Systems...',
+    'Always Learning, Always Building...',
 ];
 
 const PortfolioNavigation = () => {
@@ -109,10 +118,6 @@ const PortfolioNavigation = () => {
                 return;
             }
 
-            /*
-             * If the user reaches the bottom of the page,
-             * always activate the final section.
-             */
             const isAtBottom = (
                 window.innerHeight + window.scrollY
                 >= document.documentElement.scrollHeight - 10
@@ -126,12 +131,6 @@ const PortfolioNavigation = () => {
                 return;
             }
 
-            /*
-             * Start with Home.
-             *
-             * As we iterate downward, the latest section whose
-             * top has crossed the header threshold becomes active.
-             */
             let currentSection = sections[0];
 
             sections.forEach((section) => {
@@ -315,6 +314,114 @@ const ThemeToggle = () => {
     );
 };
 
+const TerminalIdentity = () => {
+    const [phraseIndex, setPhraseIndex] = useState(0);
+    const [text, setText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const currentPhrase = terminalPhrases[phraseIndex];
+
+        const typingSpeed = 70;
+        const deletingSpeed = 35;
+        const pauseTime = 1200;
+        const nextPhraseDelay = 250;
+
+        let timeout: number;
+
+        if (
+            !isDeleting
+            && text === currentPhrase
+        ) {
+            timeout = window.setTimeout(() => {
+                setIsDeleting(true);
+            }, pauseTime);
+        } else if (
+            isDeleting
+            && text === ''
+        ) {
+            timeout = window.setTimeout(() => {
+                setIsDeleting(false);
+
+                setPhraseIndex(
+                    (currentIndex) => (
+                        currentIndex + 1
+                    ) % terminalPhrases.length,
+                );
+            }, nextPhraseDelay);
+        } else {
+            timeout = window.setTimeout(() => {
+                const nextLength = isDeleting
+                    ? text.length - 1
+                    : text.length + 1;
+
+                setText(
+                    currentPhrase.slice(
+                        0,
+                        nextLength,
+                    ),
+                );
+            }, isDeleting
+                ? deletingSpeed
+                : typingSpeed);
+        }
+
+        return () => {
+            window.clearTimeout(timeout);
+        };
+    }, [
+        phraseIndex,
+        text,
+        isDeleting,
+    ]);
+
+    return (
+        <div
+            className="
+            flex
+            min-w-0
+            items-center
+            justify-center
+            whitespace-nowrap
+            font-mono
+            text-xs
+            font-semibold
+            sm:text-base
+            md:text-lg
+        "
+            aria-label={terminalPhrases[phraseIndex]}
+        >
+            <span
+                className="
+                mr-1.5
+                text-green-500
+            "
+                aria-hidden="true"
+            >
+                &gt;
+            </span>
+
+            <span className="text-green-500">
+                {text}
+            </span>
+
+            <span
+                className="
+                ml-1.5
+                inline-block
+                h-4
+                w-[2px]
+                animate-pulse
+                bg-green-500
+                sm:h-5
+                md:h-6
+            "
+                aria-hidden="true"
+            />
+        </div>
+    );
+};
+
 const AppMainContent = () => {
     return (
         <Suspense fallback={<PageLoader />}>
@@ -354,22 +461,32 @@ const AppMainContent = () => {
                             sticky
                             top-0
                             z-40
-                            flex
+                            grid
                             h-14
+                            grid-cols-[1fr_auto_1fr]
                             items-center
-                            justify-between
                             border-b
                             bg-background/80
-                            px-4
+                            px-2
                             backdrop-blur
+                            sm:px-4
                         "
                     >
-                        <SidebarTrigger />
+                        <div className="justify-self-start">
+                            <SidebarTrigger />
+                        </div>
 
-                        <ThemeToggle />
+                        <TerminalIdentity />
+
+                        <div className="justify-self-end">
+                            <ThemeToggle />
+                        </div>
                     </header>
 
                     <HomePage />
+
+                    <Footer />
+
                 </SidebarInset>
             </SidebarProvider>
         </Suspense>

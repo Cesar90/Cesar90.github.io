@@ -68,6 +68,11 @@ export function buildLoaders(
         },
     };
 
+    const urlLoader = {
+        test: /\.(jpg|jpeg|png|gif|svg|pdf)$/i,
+        type: 'asset/resource',
+    };
+
     return [
         codeBabelLoader,
         tsxCodeBabelLoader,
@@ -77,5 +82,7 @@ export function buildLoaders(
 
         assetLoader,
         fontLoader,
+
+        urlLoader,
     ];
 }
