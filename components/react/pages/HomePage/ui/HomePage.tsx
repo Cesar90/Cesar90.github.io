@@ -8,9 +8,12 @@ import {
     ArrowDown,
     ArrowUpRight,
     BriefcaseBusiness,
+    Bot,
+    BrainCircuit,
     Code2,
     Database,
     Download,
+    FileCode2,
     FileText,
     Github,
     Linkedin,
@@ -19,17 +22,20 @@ import {
     Minus,
     Plus,
     Monitor,
+    type LucideIcon,
     RotateCcw,
     Server,
     Terminal,
 } from 'lucide-react';
 
 import {
-    CircleMarker,
     MapContainer,
+    Marker,
     Popup,
     TileLayer,
 } from 'react-leaflet';
+
+import { divIcon } from 'leaflet';
 
 import {
     Document,
@@ -61,7 +67,7 @@ import {
 } from '@/shared/ui/shadcn/new-york';
 
 import profilePhoto from '@/shared/assets/images/cesar-cordero-retro.jpg';
-import cvPdf from '@/shared/assets/documents/Cesar-Daniel-Cordero-Jimenez-Resume.pdf';
+import cvPdf from '@/shared/assets/documents/Cesar-Daniel-Cordero-Jimenez-Full-Stack-AI-Web-Developer-Resume.pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -94,6 +100,18 @@ const technologyIcons: Record<string, string> = {
     PHP: 'devicon-php-plain',
     MySQL: 'devicon-mysql-original',
     jQuery: 'devicon-jquery-plain',
+    Go: 'devicon-go-original-wordmark',
+    DigitalOcean: 'devicon-digitalocean-original',
+    Playwright: 'devicon-playwright-plain',
+    SQLAlchemy: 'devicon-sqlalchemy-plain',
+};
+
+// Lucide symbols for AI tooling (no additional icon dependency).
+// These are representative icons rather than the vendors' official brand logos.
+const aiToolIcons: Record<string, LucideIcon> = {
+    'OpenAI Codex': Bot,
+    'Anthropic Claude': BrainCircuit,
+    'Spec-Driven Development (SDD)': FileCode2,
 };
 
 const experiences = [
@@ -101,43 +119,56 @@ const experiences = [
         company: 'CER Management Group',
         role: 'Full-Stack Developer',
         period: 'May 2024 — Present',
-        location: 'Remote / Managua',
-        website: 'https://cermanagementgroup.com',
+        location: 'Remote / Managua, Nicaragua',
+        website: 'https://cermanagementgroup.com/',
         description:
-            'Building multi-company business platforms, including payroll, recruitment, and inventory management systems.',
+            'Developing enterprise applications for staffing, time and attendance, payroll, field routes, and inventory, supported by secure multi-tenant architecture.',
         achievements: [
-            'Developed a multi-company payroll tracking system with Django and Django REST Framework, including Paycor integration.',
-            'Built a multi-tenant inventory management platform with FastAPI, React, TypeScript, and PostgreSQL.',
-            'Developed asynchronous REST APIs for invoices, suppliers, warehouses, products, and multi-branch operations.',
-            'Configured Docker environments and GitLab CI/CD pipelines for development and deployment.',
-            'Implemented application monitoring with Prometheus and Grafana.',
+            'CER Staffing: Developed recruitment and employee onboarding workflows with company-scoped roles and permissions.',
+            'CER Time: Built scheduling, timecards, pay periods, reporting, kiosk attendance, and mobile workflows.',
+            'CER Route: Developed field-route workflows for geolocation, mileage tracking, and trip closure.',
+            'CER Inventory: Developed warehouse stock management, inter-location transfers, and supplier invoicing.',
+            'CER Payroll: Built payroll administration workflows and Paycor integration for W-2 and 1099 workers.',
+            'Improved operational efficiency through software supporting recruiting, timekeeping, payroll, field routes, and inventory administration.',
+            'Built asynchronous REST APIs with FastAPI, Django, SQLAlchemy, and PostgreSQL, including subdomain-based tenant resolution, RBAC, company-scoped permissions, and Alembic migrations.',
+            'Applied OpenAI Codex and Anthropic Claude to Spec-Driven Development (SDD) and code reviews; used Playwright for browser-based end-to-end testing.',
+            'Built responsive administration, scheduling, onboarding, kiosk, and mobile workflows with React, TypeScript, and Redux Toolkit.',
+            'Instrumented API and database timings with Prometheus; used Grafana and PostgreSQL query analysis to investigate performance bottlenecks.',
+            'Deployed development and production services on DigitalOcean App Platform with Managed PostgreSQL, SSL connections, Docker, and GitLab CI/CD.',
         ],
         technologies: [
-            'Django',
             'FastAPI',
+            'Django',
             'React',
             'TypeScript',
             'PostgreSQL',
+            'SQLAlchemy',
             'Docker',
+            'DigitalOcean',
             'GitLab CI/CD',
             'Prometheus',
             'Grafana',
+            'Playwright',
+            'OpenAI Codex',
+            'Anthropic Claude',
         ],
     },
     {
         company: 'Nicasource',
         role: 'Full-Stack Developer',
         period: 'Nov 2019 — Jan 2024',
-        location: 'Remote / Managua',
+        location: 'Remote / Managua, Nicaragua',
         website: 'https://nicasource.com/',
         description:
-            'Designed and delivered SaaS platforms and web applications using modern JavaScript, cloud, and API technologies.',
+            'Developed multi-tenant SaaS applications and web products, including EdThrive, with cloud deployment and automated delivery pipelines.',
         achievements: [
-            'Architected and built EdThrive, a multi-tenant SaaS platform designed to improve team meeting efficiency for educators.',
-            'Designed GraphQL APIs using NestJS for flexible and efficient frontend data access.',
-            'Built responsive user interfaces with Next.js and React.',
-            'Deployed and managed cloud infrastructure using AWS S3, RDS, Elastic Beanstalk, Load Balancers, and Route 53.',
-            'Delivered more than 10 web projects for external and internal customers.',
+            'Architected and built EdThrive, a multi-tenant SaaS platform for educators with meeting scheduling, task management, and collaboration tools.',
+            'Deployed EdThrive on AWS using S3, RDS for PostgreSQL, Elastic Beanstalk, load balancers, and Route 53.',
+            'Implemented GitLab CI/CD pipelines and Git Flow for automated testing and deployment across development, staging, and production.',
+            'Designed and implemented GraphQL APIs using NestJS for efficient, flexible frontend data access.',
+            'Built responsive interfaces with Next.js and React for meeting organization, action-item tracking, and team collaboration.',
+            'Integrated third-party services and APIs to extend platform functionality.',
+            'Delivered more than 10 projects for internal and external customers.',
         ],
         technologies: [
             'Next.js',
@@ -153,16 +184,17 @@ const experiences = [
         company: 'Sunpyramid Health',
         role: 'Full-Stack Developer',
         period: 'Nov 2015 — Jul 2019',
-        location: 'Remote / Managua',
+        location: 'Remote / Managua, Nicaragua',
         website: 'https://www.linkedin.com/company/sunpyramid-health/',
         description:
-            'Developed and maintained eCommerce platforms and third-party integrations for a health and wellness brand.',
+            'Developed and maintained international e-commerce platforms, subscription billing integrations, and responsive customer experiences.',
         achievements: [
-            'Developed and maintained multiple eCommerce applications using Laravel, CodeIgniter, and CakePHP.',
-            'Integrated Sticky.io for subscription billing, recurring payments, and payment recovery.',
-            'Implemented UltraCart integrations for checkout, payment processing, and order management.',
-            'Integrated Mailchimp and CRM systems.',
-            'Maintained PostgreSQL databases and improved backend stability and performance.',
+            'Developed and maintained e-commerce sites using Laravel, CodeIgniter, and CakePHP for a worldwide health and wellness brand.',
+            'Integrated Sticky.io for subscription billing, recurring payments, and automated payment recovery.',
+            'Implemented UltraCart for online checkout, payment processing, and order management.',
+            'Converted Adobe XD designs into responsive interfaces using Bootstrap and JavaScript.',
+            'Integrated Mailchimp and CRM services for marketing and customer relationship management.',
+            'Maintained PostgreSQL databases and improved backend stability and performance for high-volume e-commerce operations.',
         ],
         technologies: [
             'Laravel',
@@ -174,18 +206,18 @@ const experiences = [
         ],
     },
     {
-        company: 'Ooqia',
+        company: 'OOQIA',
         role: 'Web Developer',
         period: 'Feb 2014 — Oct 2015',
-        location: 'Remote / Managua',
-        website: 'https://www.ooqia.com/services',
+        location: 'Remote / Managua, Nicaragua',
+        website: 'https://ooqia.com/',
         description:
-            'Developed web applications and interactive features while contributing across the full software development lifecycle.',
+            'Contributed to interactive educational experiences for museums and schools, including web applications, games, and map integrations.',
         achievements: [
-            'Developed web applications and interactive gaming features using AngularJS, PHP, MySQL, and jQuery.',
-            'Worked with stakeholders to translate business requirements into technical solutions.',
-            'Designed and optimized database schemas.',
-            'Implemented bug fixes, performance improvements, and new functionality.',
+            'Contributed to a web platform enabling museums and schools to create interactive educational experiences.',
+            'Developed web applications and interactive games using AngularJS, PHP, MySQL, and jQuery.',
+            'Integrated Google Maps API to deliver interactive map functionality.',
+            'Collaborated with designers and business stakeholders to deliver features, resolve defects, and improve database schemas.',
         ],
         technologies: [
             'AngularJS',
@@ -201,7 +233,7 @@ const skillGroups = [
     {
         title: 'Frontend',
         icon: Code2,
-        description: 'Modern, responsive web interfaces.',
+        description: 'React, Next.js, TypeScript, Redux Toolkit, React Hook Form, Zod, Tailwind CSS, and shadcn/ui for responsive web applications.',
         skills: [
             {
                 name: 'React',
@@ -244,11 +276,15 @@ const skillGroups = [
     {
         title: 'Backend',
         icon: Server,
-        description: 'APIs, business logic, and scalable services.',
+        description: 'FastAPI, Django REST Framework, NestJS, REST/GraphQL APIs, async SQLAlchemy, asyncpg, and Pydantic.',
         skills: [
             {
                 name: 'Python',
                 icon: 'devicon-python-plain',
+            },
+            {
+                name: 'Go',
+                icon: 'devicon-go-original-wordmark',
             },
             {
                 name: 'Django',
@@ -287,7 +323,7 @@ const skillGroups = [
     {
         title: 'Databases',
         icon: Database,
-        description: 'Relational data modeling and optimization.',
+        description: 'PostgreSQL, MySQL, SQLAlchemy, Alembic, SQL optimization, pg_stat_statements, JWT, RBAC, and tenant-scoped data access.',
         skills: [
             {
                 name: 'PostgreSQL',
@@ -306,7 +342,7 @@ const skillGroups = [
     {
         title: 'DevOps & Tooling',
         icon: Terminal,
-        description: 'Build systems, deployments, and observability.',
+        description: 'Cloud deployments, observability, Playwright E2E testing, and Spec-Driven Development (SDD) assisted by Anthropic Claude and OpenAI Codex.',
         skills: [
             {
                 name: 'Docker',
@@ -341,6 +377,10 @@ const skillGroups = [
                 icon: 'devicon-amazonwebservices-plain-wordmark',
             },
             {
+                name: 'DigitalOcean',
+                icon: 'devicon-digitalocean-original',
+            },
+            {
                 name: 'Google Cloud',
                 icon: 'devicon-googlecloud-plain',
             },
@@ -351,6 +391,22 @@ const skillGroups = [
             {
                 name: 'Grafana',
                 icon: 'devicon-grafana-plain',
+            },
+            {
+                name: 'Playwright',
+                icon: 'devicon-playwright-plain',
+            },
+            {
+                name: 'OpenAI Codex',
+                icon: '', // Rendered by aiToolIcons
+            },
+            {
+                name: 'Anthropic Claude',
+                icon: '', // Rendered by aiToolIcons
+            },
+            {
+                name: 'Spec-Driven Development (SDD)',
+                icon: '', // Rendered by aiToolIcons
             },
             {
                 name: 'VS Code',
@@ -370,9 +426,43 @@ const skillGroups = [
 
 const projects = [
     {
-        title: 'Multi-Tenant Inventory Platform',
+        title: 'CER Staffing',
         description:
-            'A centralized inventory platform for managing companies, warehouses, products, invoices, suppliers, transfers, and multi-branch operations.',
+            'Recruitment and employee onboarding workflows with company-scoped roles, permissions, and multi-tenant access controls.',
+        technologies: [
+            'FastAPI',
+            'React',
+            'TypeScript',
+            'PostgreSQL',
+            'RBAC',
+        ],
+    },
+    {
+        title: 'CER Time',
+        description:
+            'Scheduling, timecards, pay periods, reports, kiosk attendance, and mobile workflows for workforce time management.',
+        technologies: [
+            'FastAPI',
+            'React',
+            'TypeScript',
+            'PostgreSQL',
+        ],
+    },
+    {
+        title: 'CER Route',
+        description:
+            'Field-route workflows for geolocation, mileage tracking, and trip closure across business operations.',
+        technologies: [
+            'FastAPI',
+            'React',
+            'TypeScript',
+            'PostgreSQL',
+        ],
+    },
+    {
+        title: 'CER Inventory',
+        description:
+            'Multi-tenant inventory management for warehouses, branch stock, inter-location transfers, products, and supplier invoices.',
         technologies: [
             'FastAPI',
             'React',
@@ -382,20 +472,21 @@ const projects = [
         ],
     },
     {
-        title: 'Payroll Management Platform',
+        title: 'CER Payroll',
         description:
-            'A multi-company payroll and employee-hours tracking system with workflows for W-2 employees and 1099 contractors and integration with Paycor.',
+            'Payroll administration workflows and Paycor integration supporting W-2 employees and 1099 contractors.',
         technologies: [
             'Django',
             'React',
             'TypeScript',
             'PostgreSQL',
+            'Paycor',
         ],
     },
     {
         title: 'EdThrive',
         description:
-            'A multi-tenant SaaS platform for educators focused on meeting scheduling, collaboration, task management, and action-item tracking.',
+            'Multi-tenant education SaaS for team meetings, scheduling, collaboration, tasks, and action-item tracking, deployed on AWS.',
         technologies: [
             'Next.js',
             'React',
@@ -417,6 +508,7 @@ const TechnologyIcon = ({
     icon,
 }: TechnologyIconProps) => {
     const useBrandColor = name !== 'Next.js';
+    const AiIcon = aiToolIcons[name];
 
     return (
         <div
@@ -439,18 +531,25 @@ const TechnologyIcon = ({
                 hover:shadow-md
             "
         >
-            <i
-                className={`
-                    ${icon}
-                    ${useBrandColor ? 'colored' : ''}
-                    text-4xl
-                    text-foreground
-                    transition-transform
-                    duration-200
-                    group-hover:scale-110
-                `}
-                aria-hidden="true"
-            />
+            {AiIcon ? (
+                <AiIcon
+                    className="size-9 text-foreground transition-transform duration-200 group-hover:scale-110"
+                    aria-hidden="true"
+                />
+            ) : (
+                <i
+                    className={`
+                        ${icon}
+                        ${useBrandColor ? 'colored' : ''}
+                        text-4xl
+                        text-foreground
+                        transition-transform
+                        duration-200
+                        group-hover:scale-110
+                    `}
+                    aria-hidden="true"
+                />
+            )}
 
             <span className="sr-only">
                 {name}
@@ -467,8 +566,9 @@ const ExperienceTechnologyIcon = ({
     technology,
 }: ExperienceTechnologyIconProps) => {
     const icon = technologyIcons[technology];
+    const AiIcon = aiToolIcons[technology];
 
-    if (!icon) {
+    if (!icon && !AiIcon) {
         return (
             <Badge variant="secondary">
                 {technology}
@@ -499,18 +599,25 @@ const ExperienceTechnologyIcon = ({
                 hover:shadow-md
             "
         >
-            <i
-                className={`
-                    ${icon}
-                    ${useBrandColor ? 'colored' : ''}
-                    text-2xl
-                    text-foreground
-                    transition-transform
-                    duration-200
-                    group-hover:scale-110
-                `}
-                aria-hidden="true"
-            />
+            {AiIcon ? (
+                <AiIcon
+                    className="size-6 text-foreground transition-transform duration-200 group-hover:scale-110"
+                    aria-hidden="true"
+                />
+            ) : (
+                <i
+                    className={`
+                        ${icon}
+                        ${useBrandColor ? 'colored' : ''}
+                        text-2xl
+                        text-foreground
+                        transition-transform
+                        duration-200
+                        group-hover:scale-110
+                    `}
+                    aria-hidden="true"
+                />
+            )}
 
             <span className="sr-only">
                 {technology}
@@ -711,8 +818,8 @@ const CvDialog = () => {
                                 César Cordero — CV
                             </DialogTitle>
 
-                            <DialogDescription className="mt-1">
-                                Full-Stack Developer
+                            <DialogDescription className="mt-1 text-neutral-700 dark:text-neutral-200">
+                                Full-Stack AI Web Developer
                             </DialogDescription>
                         </div>
 
@@ -753,7 +860,7 @@ const CvDialog = () => {
                         sm:px-4
                     "
                 >
-                    <div className="text-xs text-muted-foreground sm:text-sm">
+                    <div className="text-xs text-neutral-600 dark:text-neutral-300 sm:text-sm">
                         {numPages > 0
                             ? `${numPages} pages`
                             : 'Loading...'}
@@ -784,7 +891,7 @@ const CvDialog = () => {
                                 min-w-[48px]
                                 text-center
                                 text-xs
-                                text-muted-foreground
+                                text-neutral-700 dark:text-neutral-200
                                 sm:text-sm
                             "
                         >
@@ -860,7 +967,7 @@ const CvDialog = () => {
                             >
                                 <FileText className="size-10 animate-pulse" />
 
-                                <p className="text-sm">
+                                <p className="text-sm text-neutral-700 dark:text-neutral-200">
                                     Loading CV...
                                 </p>
                             </div>
@@ -992,9 +1099,26 @@ const NICARAGUA_BOUNDS: [
     [number, number],
     [number, number],
 ] = [
-    [10.7, -87.8],
-    [15.1, -82.5],
-];
+        [10.7, -87.8],
+        [15.1, -82.5],
+    ];
+
+// Reuse the existing Google Maps-style pin and jumping animation in style.scss.
+// className: '' avoids Leaflet's default white square icon background.
+const MANAGUA_PIN_ICON = divIcon({
+    className: '',
+    html: `
+        <span class="google-map-pin-wrapper" aria-hidden="true">
+            <span class="google-map-pin">
+                <span class="google-map-pin-center"></span>
+            </span>
+            <span class="google-map-pin-shadow"></span>
+        </span>
+    `,
+    iconSize: [24, 28],
+    iconAnchor: [12, 27],
+    popupAnchor: [0, -27],
+});
 
 const HomePage = () => {
     return (
@@ -1064,7 +1188,7 @@ const HomePage = () => {
                                 </Tooltip>
 
                                 <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-primary">
-                                    Full-Stack Developer
+                                    Full-Stack AI Web Developer
                                 </p>
 
                                 <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
@@ -1073,11 +1197,8 @@ const HomePage = () => {
                                     Cordero Jiménez
                                 </h1>
 
-                                <p className="mt-8 max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                                    I design and build scalable web applications,
-                                    SaaS platforms, APIs, and modern user
-                                    interfaces — from database architecture to
-                                    production deployment.
+                                <p className="mt-8 max-w-3xl text-lg leading-7 text-neutral-700 dark:text-neutral-200 sm:text-xl">
+                                    I design and build scalable SaaS and enterprise applications using Spec-Driven Development (SDD), supported by Anthropic Claude and OpenAI Codex for implementation and code review. My expertise spans software architecture, secure APIs, cloud infrastructure, and reliable production-ready systems.
                                 </p>
 
                                 <div
@@ -1276,31 +1397,39 @@ const HomePage = () => {
                                 </p>
 
                                 <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-                                    Building software from UI to infrastructure.
+                                    Engineering software from application workflows to cloud infrastructure.
                                 </h2>
                             </div>
 
-                            <div className="space-y-6 text-lg leading-8 text-muted-foreground">
+                            <div className="space-y-6 text-lg leading-7 text-neutral-700 dark:text-neutral-200">
                                 <p>
-                                    I&apos;m a full-stack web developer with
-                                    more than a decade of experience building
-                                    web applications, SaaS platforms,
-                                    eCommerce systems, and business software.
+                                    I am a full-stack AI web developer with
+                                    years of experience building SaaS and
+                                    enterprise software across staffing, time
+                                    and attendance, payroll, field operations,
+                                    inventory, education, and e-commerce.
                                 </p>
 
                                 <p>
-                                    My work spans React and TypeScript on the
-                                    frontend; Django, FastAPI, Node.js and
-                                    NestJS on the backend; and PostgreSQL for
-                                    data-intensive applications.
+                                    My stack includes React, Next.js, and
+                                    TypeScript; Python, FastAPI, Django,
+                                    Node.js, NestJS, and Go; and PostgreSQL
+                                    with secure multi-tenant architecture,
+                                    RBAC, and company-scoped data access.
                                 </p>
 
                                 <p>
-                                    I also enjoy working beyond application
-                                    code: Webpack configuration, database
-                                    architecture, Docker, CI/CD, cloud
-                                    infrastructure, monitoring, and
-                                    performance optimization.
+                                    I work across DigitalOcean, AWS, and GCP;
+                                    Docker and GitLab CI/CD; and observability
+                                    with Prometheus, Grafana, and PostgreSQL
+                                    query analysis. I use Anthropic Claude and
+                                    OpenAI Codex for AI-assisted Spec-Driven
+                                    Development (SDD), implementation, and code
+                                    review, with Playwright for E2E testing.
+                                    I hold a
+                                    bachelor&apos;s degree in Computer Engineering
+                                    from the National University of Engineering
+                                    (UNI), Managua.
                                 </p>
                             </div>
                         </div>
@@ -1324,10 +1453,10 @@ const HomePage = () => {
                                 Work Experience
                             </h2>
 
-                            <p className="mt-4 max-w-2xl text-muted-foreground">
-                                Building web applications and digital
-                                products across SaaS, payroll, inventory,
-                                eCommerce, and cloud platforms.
+                            <p className="mt-4 max-w-2xl text-neutral-700 dark:text-neutral-200">
+                                Building SaaS and enterprise platforms across
+                                staffing, timekeeping, payroll, field routes,
+                                inventory, education, and e-commerce.
                             </p>
                         </div>
 
@@ -1342,7 +1471,7 @@ const HomePage = () => {
                                             {experience.period}
                                         </p>
 
-                                        <p className="mt-1 text-sm text-muted-foreground">
+                                        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
                                             {experience.location}
                                         </p>
                                     </div>
@@ -1369,26 +1498,86 @@ const HomePage = () => {
                                             <BriefcaseBusiness className="size-5 text-muted-foreground" />
                                         </div>
 
-                                        <p className="mt-5 max-w-3xl leading-7 text-muted-foreground">
+                                        <p className="mt-5 max-w-3xl leading-7 text-neutral-700 dark:text-neutral-200">
                                             {experience.description}
                                         </p>
 
-                                        <ul className="mt-5 max-w-4xl space-y-3 text-sm leading-6 text-muted-foreground">
-                                            {experience.achievements.map(
-                                                (achievement) => (
-                                                    <li
-                                                        key={achievement}
-                                                        className="flex gap-3"
-                                                    >
-                                                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
+                                        <div className="mt-5 max-w-4xl overflow-hidden rounded-md border border-neutral-200 dark:border-neutral-800">
+                                            <div
+                                                className="
+                                                    flex
+                                                    items-center
+                                                    justify-between
+                                                    gap-3
+                                                    border-b
+                                                    border-neutral-200
+                                                    bg-neutral-50
+                                                    px-4
+                                                    py-3
+                                                    font-mono
+                                                    text-xs
+                                                    dark:border-neutral-800
+                                                    dark:bg-neutral-950
+                                                "
+                                            >
+                                                <span className="flex min-w-0 items-center gap-2">
+                                                    <span className="size-2 shrink-0 bg-green-600 dark:bg-green-500" aria-hidden="true" />
 
-                                                        <span>
-                                                            {achievement}
-                                                        </span>
-                                                    </li>
-                                                ),
-                                            )}
-                                        </ul>
+                                                    <span className="truncate text-neutral-700 dark:text-neutral-300">
+                                                        career/{experience.company.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md
+                                                    </span>
+                                                </span>
+
+                                                <span className="shrink-0 font-semibold text-green-700 dark:text-green-400">
+                                                    +{experience.achievements.length}
+                                                </span>
+                                            </div>
+
+                                            <ol
+                                                aria-label={`${experience.company} achievements`}
+                                                className="divide-y divide-green-100/70 dark:divide-green-900/30"
+                                            >
+                                                {experience.achievements.map(
+                                                    (achievement, index) => (
+                                                        <li
+                                                            key={achievement}
+                                                            className="
+                                                                grid
+                                                                grid-cols-[2rem_1rem_minmax(0,1fr)]
+                                                                items-start
+                                                                gap-2
+                                                                bg-green-50/70
+                                                                px-3
+                                                                py-3
+                                                                text-sm
+                                                                leading-6
+                                                                sm:grid-cols-[2.5rem_1rem_minmax(0,1fr)]
+                                                                sm:px-4
+                                                                dark:bg-green-950/20
+                                                            "
+                                                        >
+                                                            <span
+                                                                aria-hidden="true"
+                                                                className="flex h-6 items-center justify-end select-none font-mono text-xs leading-none tabular-nums text-neutral-500 dark:text-neutral-500"
+                                                            >
+                                                                {String(index + 1).padStart(2, '0')}
+                                                            </span>
+
+                                                            <span
+                                                                aria-hidden="true"
+                                                                className="flex h-6 items-center justify-center select-none font-mono text-sm font-semibold leading-none text-green-700 dark:text-green-400"
+                                                            >
+                                                                +
+                                                            </span>
+
+                                                            <span className="min-w-0 break-words text-neutral-700 dark:text-neutral-200">
+                                                                {achievement}
+                                                            </span>
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ol>
+                                        </div>
 
                                         <div className="mt-6 flex flex-wrap gap-2">
                                             {experience.technologies.map(
@@ -1424,9 +1613,10 @@ const HomePage = () => {
                                 Technical Skills
                             </h2>
 
-                            <p className="mt-4 max-w-2xl text-muted-foreground">
-                                Technologies and tools I use to build,
-                                deploy, and maintain modern web applications.
+                            <p className="mt-4 max-w-2xl text-neutral-700 dark:text-neutral-200">
+                                Languages, frameworks, cloud platforms,
+                                security, testing, and AI-assisted engineering
+                                tools I use to deliver production software.
                             </p>
                         </div>
 
@@ -1445,7 +1635,7 @@ const HomePage = () => {
                                                 {group.title}
                                             </CardTitle>
 
-                                            <CardDescription>
+                                            <CardDescription className="text-neutral-700 dark:text-neutral-200">
                                                 {group.description}
                                             </CardDescription>
                                         </CardHeader>
@@ -1485,9 +1675,10 @@ const HomePage = () => {
                                 Featured Projects
                             </h2>
 
-                            <p className="mt-4 max-w-2xl text-muted-foreground">
-                                A selection of systems and products I&apos;ve
-                                worked on throughout my career.
+                            <p className="mt-4 max-w-2xl text-neutral-700 dark:text-neutral-200">
+                                Selected enterprise platforms and SaaS products
+                                I have worked on, from workforce operations
+                                to inventory and education.
                             </p>
                         </div>
 
@@ -1509,7 +1700,7 @@ const HomePage = () => {
                                             {project.title}
                                         </CardTitle>
 
-                                        <CardDescription className="leading-6">
+                                        <CardDescription className="leading-6 text-neutral-700 dark:text-neutral-200">
                                             {project.description}
                                         </CardDescription>
                                     </CardHeader>
@@ -1549,7 +1740,7 @@ const HomePage = () => {
                                 Let&apos;s build something useful.
                             </h2>
 
-                            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
+                            <p className="mx-auto mt-6 max-w-2xl text-lg leading-7 text-neutral-700 dark:text-neutral-200">
                                 Interested in working together or discussing
                                 a software project? Feel free to reach out.
                             </p>
@@ -1610,7 +1801,7 @@ const HomePage = () => {
                                     </h3>
                                 </div>
 
-                                <p className="mt-2 text-sm text-muted-foreground">
+                                <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
                                     Available for remote collaboration and
                                     software development opportunities.
                                 </p>
@@ -1642,12 +1833,10 @@ const HomePage = () => {
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     />
 
-                                    <CircleMarker
-                                        center={MANAGUA_POSITION}
-                                        radius={10}
-                                        pathOptions={{
-                                            fillOpacity: 0.8,
-                                        }}
+                                    <Marker
+                                        position={MANAGUA_POSITION}
+                                        icon={MANAGUA_PIN_ICON}
+                                        title="Managua, Nicaragua"
                                     >
                                         <Popup>
                                             <div>
@@ -1657,10 +1846,10 @@ const HomePage = () => {
 
                                                 <br />
 
-                                                Full-Stack Developer
+                                                Full-Stack AI Web Developer
                                             </div>
                                         </Popup>
-                                    </CircleMarker>
+                                    </Marker>
                                 </MapContainer>
                             </div>
                         </div>

@@ -1,4 +1,6 @@
+
 import * as React from 'react';
+
 import {
     Building,
     Building2,
@@ -9,19 +11,21 @@ import {
     Users,
     Settings,
 } from 'lucide-react';
+
 import {
     NavMainModern,
     NavUser,
     SidebarBrand,
 } from '@/widgets/Sidebar';
+
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
 } from '@/shared/ui/shadcn/new-york';
-import { useUser } from '@/app/providers/StoreProvider';
 
+// Navigation configuration
 const navMainDashboard = [
     {
         title: 'Reports',
@@ -43,18 +47,6 @@ const navMainDashboard = [
             },
         ],
     },
-    // {
-    //     title: 'Companies',
-    //     url: '#',
-    //     icon: Building,
-    //     isActive: true,
-    //     items: [
-    //         {
-    //             title: 'Company List',
-    //             url: '/admin/companies/list',
-    //         },
-    //     ],
-    // },
     {
         title: 'Warehouse',
         url: '#',
@@ -91,28 +83,12 @@ const navMainDashboard = [
             },
         ],
     },
-    // {
-    //     title: 'Inventories',
-    //     url: '#',
-    //     icon: Warehouse,
-    //     isActive: true,
-    //     items: [
-    //         {
-    //             title: 'Warehouse List',
-    //             url: '/admin/internallocations/list',
-    //         },
-    //     ],
-    // },
     {
         title: 'Suppliers',
         url: '#',
         icon: Boxes,
         isActive: false,
         items: [
-            // {
-            //     title: 'Create Invoice',
-            //     url: '/admin/suppliers/createinvoice',
-            // },
             {
                 title: 'Supplier List',
                 url: '/admin/suppliers/list',
@@ -137,14 +113,6 @@ const navMainDashboard = [
                 title: 'Customer List',
                 url: '/admin/customers/list',
             },
-            // {
-            //     title: 'Customer Type List',
-            //     url: '/admin/customers/types/list',
-            // },
-            // {
-            //     title: 'Customer Invoice Status List',
-            //     url: '/admin/customers/invoices/status/list',
-            // },
         ],
     },
     {
@@ -153,22 +121,10 @@ const navMainDashboard = [
         icon: Boxes,
         isActive: false,
         items: [
-            // {
-            //     title: 'Create Product',
-            //     url: '/admin/products/create',
-            // },
-            // {
-            //     title: 'Product List',
-            //     url: '/admin/products/list',
-            // },
             {
                 title: 'Brand List',
                 url: '/admin/products/brands/list',
             },
-            // {
-            //     title: 'Sub Brand List',
-            //     url: '/admin/products/subbrands/list',
-            // },
         ],
     },
     {
@@ -197,21 +153,11 @@ const navMainDashboard = [
         icon: ShieldCheck,
         isActive: false,
         items: [
-            // {
-            //     title: 'Users',
-            //     url: '/admin/security/users/list',
-            //     requiredPermission: 'users.read',
-            // },
             {
                 title: 'Roles',
                 url: '/admin/security/roles/list',
                 requiredPermission: 'roles.read',
             },
-            // {
-            //     title: 'Permissions',
-            //     url: '/admin/security/permissions/list',
-            //     requiredPermission: 'permissions.read',
-            // },
             {
                 title: 'Role Permissions',
                 url: '/admin/security/role-permissions/list',
@@ -249,7 +195,6 @@ const navMainDashboard = [
 ];
 
 const navMainPublic = [
-    // ...Object.values(sharedItems).flat(),
     {
         title: 'Config',
         url: '#',
@@ -261,72 +206,74 @@ const navMainPublic = [
             },
         ],
     },
-    // sharedItems.invoices,
-    // sharedItems.paycor,
-    // sharedItems.report
 ];
 
-// const data = {
-//     user: {
-//         name: 'shadcn',
-//         email: 'm@example.com',
-//         avatar: '/avatars/shadcn.jpg',
-//     },
-//     navSecondary: [
-//         {
-//             title: 'Support',
-//             url: '#',
-//             icon: LifeBuoy,
-//         },
-//         {
-//             title: 'Feedback',
-//             url: '#',
-//             icon: Send,
-//         },
-//     ],
-//     projects: [
-//         {
-//             name: 'Design Engineering',
-//             url: '#',
-//             icon: Frame,
-//         },
-//         {
-//             name: 'Sales & Marketing',
-//             url: '#',
-//             icon: PieChart,
-//         },
-//         {
-//             name: 'Travel',
-//             url: '#',
-//             icon: Map,
-//         },
-//     ],
-// };
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { userLogged } = useUser();
+// Reuse the user type expected by NavUser.
+type SidebarUser = React.ComponentProps<
+    typeof NavUser
+>['user'];
 
+interface AppSidebarProps
+    extends React.ComponentProps<typeof Sidebar> {
+    userLogged?: (
+        SidebarUser & {
+            is_superuser?: boolean;
+        }
+    ) | null;
+}
+
+export function AppSidebar({
+    userLogged,
+    ...props
+}: AppSidebarProps) {
     if (!userLogged) {
         return null;
     }
 
     const sidebarItems = userLogged.is_superuser
         ? navMainDashboard
-        : [...navMainDashboard, ...navMainPublic];
+        : [
+            ...navMainDashboard,
+            ...navMainPublic,
+        ];
 
     return (
         <Sidebar
             {...props}
-            className="overflow-hidden border-r border-slate-200/80 bg-white/95 shadow-[2px_0_10px_rgba(15,23,42,0.02)]"
+            className="
+                overflow-hidden
+                border-r
+                border-sidebar-border
+                bg-sidebar
+                text-sidebar-foreground
+            "
         >
-            <SidebarHeader className="px-2 pb-1 pt-2 border-b">
+            <SidebarHeader
+                className="
+                    border-b
+                    border-sidebar-border
+                    px-2
+                    pb-1
+                    pt-2
+                "
+            >
                 <SidebarBrand />
             </SidebarHeader>
+
             <SidebarContent className="px-1">
                 <NavMainModern
                     items={sidebarItems}
                 />
             </SidebarContent>
-            <SidebarFooter className="border-t border-slate-200/80 px-2 py-2">
+
+            <SidebarFooter
+                className="
+                    border-t
+                    border-sidebar-border
+                    px-2
+                    py-2
+                "
+            >
                 <NavUser user={userLogged} />
             </SidebarFooter>
         </Sidebar>

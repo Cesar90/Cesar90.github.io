@@ -1,3 +1,4 @@
+
 import {
     memo,
     Suspense,
@@ -76,7 +77,7 @@ const navigationItems = [
 ];
 
 const terminalPhrases = [
-    'César Cordero · Full-Stack Developer',
+    'César Cordero · Full-Stack AI Web Developer',
     'Python | Go | TypeScript',
     'React | Django | FastAPI',
     'Building Scalable Systems...',
@@ -267,7 +268,7 @@ const SidebarBrand = () => {
                             </span>
 
                             <span className="truncate text-xs text-muted-foreground">
-                                Full-Stack Developer
+                                Full-Stack AI Web Developer
                             </span>
                         </div>
                     </a>
@@ -378,24 +379,24 @@ const TerminalIdentity = () => {
     return (
         <div
             className="
-            flex
-            min-w-0
-            items-center
-            justify-center
-            whitespace-nowrap
-            font-mono
-            text-xs
-            font-semibold
-            sm:text-base
-            md:text-lg
-        "
+                flex
+                min-w-0
+                items-center
+                justify-center
+                whitespace-nowrap
+                font-mono
+                text-xs
+                font-semibold
+                sm:text-base
+                md:text-lg
+            "
             aria-label={terminalPhrases[phraseIndex]}
         >
             <span
                 className="
-                mr-1.5
-                text-green-500
-            "
+                    mr-1.5
+                    text-green-500
+                "
                 aria-hidden="true"
             >
                 &gt;
@@ -407,15 +408,15 @@ const TerminalIdentity = () => {
 
             <span
                 className="
-                ml-1.5
-                inline-block
-                h-4
-                w-[2px]
-                animate-pulse
-                bg-green-500
-                sm:h-5
-                md:h-6
-            "
+                    ml-1.5
+                    inline-block
+                    h-4
+                    w-[2px]
+                    animate-pulse
+                    bg-green-500
+                    sm:h-5
+                    md:h-6
+                "
                 aria-hidden="true"
             />
         </div>
@@ -442,13 +443,30 @@ const AppMainContent = () => {
                         <PortfolioNavigation />
                     </SidebarContent>
 
+                    {/* Footer: adapts to collapsed sidebar */}
                     <SidebarFooter className="border-t border-sidebar-border">
-                        <div className="px-2 py-3 text-xs text-sidebar-foreground/60">
-                            ©
-                            {' '}
-                            {new Date().getFullYear()}
-                            {' '}
-                            César Cordero
+                        <div
+                            className="
+                                flex
+                                w-full
+                                items-center
+                                justify-start
+                                whitespace-nowrap
+                                px-2
+                                py-3
+                                text-xs
+                                text-sidebar-foreground/60
+                                group-data-[collapsible=icon]:justify-center
+                                group-data-[collapsible=icon]:px-0
+                            "
+                        >
+                            <span>©</span>
+
+                            <span className="ml-1 group-data-[collapsible=icon]:hidden">
+                                {new Date().getFullYear()}
+                                {' '}
+                                César Cordero
+                            </span>
                         </div>
                     </SidebarFooter>
 
@@ -486,7 +504,6 @@ const AppMainContent = () => {
                     <HomePage />
 
                     <Footer />
-
                 </SidebarInset>
             </SidebarProvider>
         </Suspense>

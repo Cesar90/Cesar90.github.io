@@ -1,0 +1,242 @@
+/* Append AFTER your existing Tailwind/shadcn tokens in the global SCSS entry.
+   This file scopes the visual design to the portfolio where possible. */
+
+:root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 35%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+    --border: 0 0% 82%;
+    --input: 0 0% 82%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+    --primary: 0 70% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 93%;
+    --secondary-foreground: 0 0% 12%;
+    --accent: 0 0% 91%;
+    --accent-foreground: 0 0% 11%;
+    --destructive: 0 80% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 0 70% 43%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 0 70% 43%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 91%;
+    --sidebar-accent-foreground: 0 0% 12%;
+    --sidebar-border: 0 0% 82%;
+    --sidebar-ring: 0 70% 43%;
+    --radius: 0.25rem;
+}
+
+.dark {
+    --background: 0 0% 3.5%;
+    --foreground: 0 0% 96%;
+    --muted: 0 0% 11%;
+    --muted-foreground: 0 0% 67%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 96%;
+    --border: 0 0% 19%;
+    --input: 0 0% 21%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 96%;
+    --primary: 0 100% 59%;
+    --primary-foreground: 0 0% 7%;
+    --secondary: 0 0% 13%;
+    --secondary-foreground: 0 0% 96%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 65% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 0 100% 59%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 0 100% 59%;
+    --sidebar-primary-foreground: 0 0% 7%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 19%;
+    --sidebar-ring: 0 100% 59%;
+    --radius: 0.25rem;
+}
+
+/* Legacy variables used elsewhere in the portfolio app. */
+.app_dark_theme {
+    --bg-color: #090909;
+    --inverted-bg-color: #f7f7f7;
+    --primary-color: #f5f5f5;
+    --secondary-color: #a6a6a6;
+    --inverted-primary-color: #ff3030;
+    --inverted-secondary-color: #c82121;
+    --skeleton-color: #161616;
+    --skeleton-shadow: #242424;
+    --code-bg: #111111;
+    --card-bg: #141414;
+    --listbox-bg: #141414;
+}
+
+.portfolio-shell {
+    --font-sans: 'DM Sans', Arial, sans-serif;
+    font-family: var(--font-sans);
+    color-scheme: light;
+}
+
+.dark .portfolio-shell {
+    color-scheme: dark;
+}
+
+.portfolio-display {
+    font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+}
+
+.portfolio-kicker,
+.portfolio-technology-tag,
+.portfolio-photo-marker,
+.portfolio-diagram-node {
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.portfolio-kicker {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1.7;
+}
+
+.portfolio-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem;
+}
+
+.portfolio-red-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    background: hsl(var(--primary));
+}
+
+.portfolio-icon-button {
+    display: inline-flex;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    transition: border-color 180ms ease, color 180ms ease;
+}
+
+.portfolio-icon-button:hover {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+}
+
+.portfolio-icon-button:focus-visible,
+.portfolio-header a:focus-visible,
+.portfolio-page a:focus-visible,
+.portfolio-page button:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+}
+
+.portfolio-nav-link:hover {
+    color: hsl(var(--primary));
+}
+
+.portfolio-hero-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.35;
+    background-image: linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to right, transparent 3%, #000 65%, transparent 100%);
+    pointer-events: none;
+}
+
+.portfolio-outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1.5px hsl(var(--foreground));
+}
+
+.portfolio-photo-frame {
+    box-shadow: 14px 14px 0 hsl(var(--primary) / 0.08);
+}
+
+.portfolio-photo-marker {
+    background: hsl(var(--background) / 0.9);
+    padding: 0.4rem 0.6rem;
+    color: hsl(var(--primary));
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.portfolio-button-primary {
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+}
+
+.portfolio-button-primary:hover {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+.portfolio-technology-tag {
+    border: 1px solid hsl(var(--border));
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.portfolio-diagram-node {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid hsl(var(--border));
+    font-size: 0.72rem;
+    color: hsl(var(--foreground));
+}
+
+.portfolio-case-study,
+.portfolio-tool-card {
+    box-shadow: none;
+}
+
+.portfolio-page section {
+    scroll-margin-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .portfolio-shell *,
+    .portfolio-shell *::before,
+    .portfolio-shell *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .portfolio-outline-text {
+        -webkit-text-stroke-width: 1px;
+    }
+
+    .portfolio-hero-grid::before {
+        background-size: 48px 48px;
+    }
+}
+
+@import "./portfolio-theme.scss";
